@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>暮色 · TWILIGHT</title>
+  <meta name="description" content="一张冬日黄昏的照片，一段关于时间与记忆的旅程。GTA6 风格沉浸式视觉体验。">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- 粒子 Canvas 覆盖层 -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- 自定义光标 -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor-follower"></div>
+
+  <!-- 预加载画面 -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-line"></div>
+      <span class="loader-text">LOADING</span>
+      <div class="loader-progress">
+        <div class="loader-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SECTION 1: HERO ===================== -->
+  <section id="hero" class="section hero-section">
+    <div class="hero-image-wrapper">
+      <img src="IMG_20260202_175827.jpg" alt="冬日黄昏剪影" class="hero-image" id="hero-image">
+      <!-- 渐变叠加层 -->
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-subtitle-top" id="hero-subtitle-top">A MOMENT IN TIME</div>
+      <h1 class="hero-title" id="hero-title">
+        <span class="hero-title-line" data-text="暮">暮</span>
+        <span class="hero-title-line" data-text="色">色</span>
+      </h1>
+      <div class="hero-subtitle" id="hero-subtitle">TWILIGHT</div>
+      <div class="hero-date" id="hero-date">2026.02.02</div>
+    </div>
+
+    <div class="scroll-indicator" id="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">SCROLL</span>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2: ZOOM REVEAL ===================== -->
+  <section id="zoom-reveal" class="section zoom-section">
+    <div class="zoom-image-container" id="zoom-container">
+      <img src="IMG_20260202_175827.jpg" alt="黄昏缩放" class="zoom-image" id="zoom-image">
+      <div class="zoom-overlay-gradient"></div>
+    </div>
+    <div class="zoom-text-container">
+      <div class="zoom-text-block" id="zoom-text-1">
+        <span class="zoom-label">THE SKY</span>
+        <h2 class="zoom-heading">暮色中的天空</h2>
+        <p class="zoom-desc">那一刻，天空从深蓝色缓缓过渡到暖橙，仿佛时间在此刻凝固。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3: STORY ===================== -->
+  <section id="story" class="section story-section">
+    <div class="story-bg"></div>
+    <div class="story-container">
+      <div class="story-eyebrow" id="story-eyebrow">THE STORY BEHIND</div>
+      <div class="story-lines" id="story-lines">
+        <p class="story-line">冬日的傍晚，</p>
+        <p class="story-line">站在某个高处望向远方，</p>
+        <p class="story-line">枯树的枝桠在暮色中伸展，</p>
+        <p class="story-line">像是在触摸最后一缕阳光。</p>
+        <p class="story-line story-line-gap">天际线上，</p>
+        <p class="story-line">橙色与蓝色在那里交汇，</p>
+        <p class="story-line">白天与黑夜在此刻对话。</p>
+        <p class="story-line story-line-gap">这就是家的方向，</p>
+        <p class="story-line">时间在这里走得很慢，</p>
+        <p class="story-line">慢到你可以听见风的声音。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 4: PARALLAX GALLERY ===================== -->
+  <section id="parallax" class="section parallax-section">
+    <div class="parallax-layer parallax-layer-back" id="parallax-back">
+      <img src="IMG_20260202_175827.jpg" alt="视差背景" class="parallax-img">
+    </div>
+    <div class="parallax-layer parallax-layer-mid" id="parallax-mid">
+      <div class="parallax-text-card">
+        <span class="parallax-card-label">FEEL THE MOMENT</span>
+        <h2 class="parallax-card-title">感受这一刻</h2>
+      </div>
+    </div>
+    <div class="parallax-layer parallax-layer-front" id="parallax-front">
+      <div class="parallax-stats">
+        <div class="parallax-stat">
+          <span class="stat-number" id="stat-temp">-2°</span>
+          <span class="stat-label">温度</span>
+        </div>
+        <div class="parallax-stat">
+          <span class="stat-number" id="stat-time">17:58</span>
+          <span class="stat-label">时间</span>
+        </div>
+        <div class="parallax-stat">
+          <span class="stat-number" id="stat-wind">NW</span>
+          <span class="stat-label">风向</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 5: ENDING ===================== -->
+  <section id="ending" class="section ending-section">
+    <div class="ending-bg-glow"></div>
+    <div class="ending-content">
+      <div class="ending-image-mask" id="ending-mask">
+        <img src="IMG_20260202_175827.jpg" alt="结尾照片" class="ending-image">
+      </div>
+      <h2 class="ending-title" id="ending-title">
+        <span class="ending-title-line">暮色终将散去</span>
+        <span class="ending-title-line">但光永远在路上</span>
+      </h2>
+      <div class="ending-credits" id="ending-credits">
+        <span class="credits-line">摄影 · PHOTOGRAPHY</span>
+        <span class="credits-line credits-author">某个冬日的傍晚</span>
+        <span class="credits-line credits-date">二〇二六年二月二日</span>
+      </div>
+    </div>
+    <div class="ending-footer">
+      <span>TWILIGHT · 暮色</span>
+      <span>GTA VI STYLE EXPERIENCE</span>
+    </div>
+  </section>
+
+  <script src="js/particles.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,707 @@
+/* =========================================================
+   暮色 · TWILIGHT — GTA6 风格展示页样式
+   ========================================================= */
+
+/* NOTE: 色彩体系从照片中提取：深蓝天空→暖橙地平线 */
+:root {
+  /* 主色调 — 从照片提取 */
+  --sky-deep: #0a1628;
+  --sky-blue: #1a3a5c;
+  --sky-mid: #2c5a7c;
+  --horizon-warm: #c76e2f;
+  --horizon-orange: #e8913a;
+  --horizon-gold: #f0b060;
+  --silhouette: #0d1117;
+
+  /* 功能色 */
+  --text-primary: #f0ece4;
+  --text-secondary: rgba(240, 236, 228, 0.6);
+  --text-accent: #e8913a;
+  --bg-dark: #060b14;
+  --bg-section: #0a1220;
+
+  /* 字体 */
+  --font-display: 'Noto Serif SC', serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* 间距 */
+  --section-padding: clamp(2rem, 5vw, 6rem);
+}
+
+/* ======================== RESET ======================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* GSAP 接管滚动行为 */
+  overflow-x: hidden;
+  background: var(--bg-dark);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-dark);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* =================== 自定义光标 =================== */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--horizon-orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease;
+}
+
+.custom-cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(232, 145, 58, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+/* =================== 预加载画面 =================== */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.loader-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--horizon-orange), transparent);
+  animation: loaderPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loaderPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.5); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+.loader-text {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.loader-progress {
+  width: 200px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.loader-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--horizon-orange), var(--horizon-gold));
+  transition: width 0.3s ease;
+}
+
+/* =================== 粒子 Canvas =================== */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.6;
+}
+
+/* =================== 通用 Section =================== */
+.section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* =====================================================
+   SECTION 1: HERO
+   ===================================================== */
+.hero-section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  transform: scale(1.15);
+  will-change: transform;
+  filter: brightness(0.85) saturate(1.2);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(10, 22, 40, 0.3) 0%,
+      rgba(10, 22, 40, 0.0) 40%,
+      rgba(10, 22, 40, 0.0) 60%,
+      rgba(6, 11, 20, 0.7) 100%
+    ),
+    radial-gradient(ellipse at 70% 90%,
+      rgba(200, 110, 47, 0.15) 0%,
+      transparent 60%
+    );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-subtitle-top {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--text-secondary);
+  font-weight: 300;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hero-title {
+  display: flex;
+  gap: 0.3em;
+  line-height: 1;
+}
+
+.hero-title-line {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 900;
+  color: transparent;
+  /* NOTE: 文字用照片渐变色填充，营造与照片融为一体的感觉 */
+  background: linear-gradient(
+    180deg,
+    var(--text-primary) 0%,
+    var(--horizon-gold) 50%,
+    var(--horizon-orange) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  transform: translateY(60px);
+  text-shadow: none;
+  filter: drop-shadow(0 0 60px rgba(232, 145, 58, 0.2));
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  letter-spacing: 1em;
+  color: var(--text-secondary);
+  font-weight: 300;
+  opacity: 0;
+  transform: translateY(20px);
+  margin-top: 0.5rem;
+}
+
+.hero-date {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: rgba(232, 145, 58, 0.5);
+  font-weight: 300;
+  opacity: 0;
+  transform: translateY(20px);
+  margin-top: 1rem;
+}
+
+/* 滚动提示 */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 2;
+  opacity: 0;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, transparent, var(--horizon-orange));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+.scroll-text {
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* =====================================================
+   SECTION 2: ZOOM REVEAL
+   ===================================================== */
+.zoom-section {
+  height: 250vh; /* 拉长区间用于 pinned 滚动 */
+  background: var(--bg-dark);
+}
+
+.zoom-image-container {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.zoom-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  transform: scale(2);
+  will-change: transform, clip-path;
+  /* NOTE: 初始用圆形裁剪，滚动展开到全屏 */
+  clip-path: circle(8% at 50% 50%);
+  filter: brightness(0.9) saturate(1.3);
+}
+
+.zoom-overlay-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 11, 20, 0.4) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(6, 11, 20, 0.8) 100%
+  );
+  pointer-events: none;
+}
+
+.zoom-text-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--section-padding);
+  padding-bottom: 15vh;
+  z-index: 2;
+}
+
+.zoom-text-block {
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.zoom-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  color: var(--horizon-orange);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.zoom-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text-primary), var(--horizon-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.zoom-desc {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* =====================================================
+   SECTION 3: STORY
+   ===================================================== */
+.story-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--section-padding);
+  /* NOTE: 背景色从深蓝过渡到更深的色调，营造夜晚降临感 */
+  background: linear-gradient(
+    180deg,
+    var(--bg-dark) 0%,
+    var(--bg-section) 50%,
+    var(--bg-dark) 100%
+  );
+}
+
+.story-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 30% 50%,
+    rgba(42, 90, 124, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.story-container {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  text-align: center;
+}
+
+.story-eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--horizon-orange);
+  margin-bottom: 3rem;
+  font-weight: 600;
+  opacity: 0;
+}
+
+.story-line {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  line-height: 2.2;
+  font-weight: 400;
+  color: var(--text-primary);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.story-line-gap {
+  margin-top: 1.5em;
+}
+
+/* =====================================================
+   SECTION 4: PARALLAX GALLERY
+   ===================================================== */
+.parallax-section {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-layer-back {
+  z-index: 1;
+}
+
+.parallax-img {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  object-position: center 40%;
+  filter: brightness(0.5) saturate(1.4) blur(1px);
+}
+
+.parallax-layer-mid {
+  z-index: 2;
+}
+
+.parallax-text-card {
+  background: rgba(6, 11, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(232, 145, 58, 0.15);
+  border-radius: 2px;
+  padding: 3rem 4rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(60px) scale(0.9);
+}
+
+.parallax-card-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--horizon-orange);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.parallax-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--text-primary), var(--horizon-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.parallax-layer-front {
+  z-index: 3;
+  align-items: flex-end;
+  padding-bottom: 8vh;
+}
+
+.parallax-stats {
+  display: flex;
+  gap: 4rem;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.parallax-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-number {
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--text-secondary);
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+/* =====================================================
+   SECTION 5: ENDING
+   ===================================================== */
+.ending-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--section-padding);
+  background: var(--bg-dark);
+  position: relative;
+}
+
+.ending-bg-glow {
+  position: absolute;
+  inset: 0;
+  /* NOTE: 底部发出暖色光晕，模拟落日余晖 */
+  background: radial-gradient(
+    ellipse 100% 50% at 50% 100%,
+    rgba(200, 110, 47, 0.1) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.ending-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  text-align: center;
+}
+
+.ending-image-mask {
+  width: clamp(200px, 40vw, 400px);
+  height: clamp(130px, 25vw, 250px);
+  overflow: hidden;
+  border-radius: 2px;
+  /* NOTE: 菱形遮罩，从0%展开到100% */
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.ending-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  filter: brightness(0.8) saturate(1.3);
+}
+
+.ending-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.ending-title-line {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--horizon-gold) 50%,
+    var(--horizon-orange) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.ending-credits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.credits-line {
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.credits-author {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+.credits-date {
+  color: var(--horizon-orange);
+  font-size: 0.6rem;
+}
+
+.ending-footer {
+  position: absolute;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--section-padding);
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: rgba(240, 236, 228, 0.2);
+  font-weight: 300;
+}
+
+/* =================== 自定义滚动条 =================== */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--sky-blue), var(--horizon-orange));
+  border-radius: 2px;
+}
+
+/* =================== 响应式 =================== */
+@media (max-width: 768px) {
+  .parallax-stats {
+    gap: 2rem;
+  }
+
+  .parallax-text-card {
+    padding: 2rem 2.5rem;
+    margin: 0 1rem;
+  }
+
+  .ending-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  body {
+    cursor: auto;
+  }
+
+  .custom-cursor,
+  .custom-cursor-follower {
+    display: none;
+  }
+}
+
+/* =================== 选择文字样式 =================== */
+::selection {
+  background: rgba(232, 145, 58, 0.3);
+  color: var(--text-primary);
+}
